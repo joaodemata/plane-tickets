@@ -19,6 +19,7 @@ const CANCEL_EVENT = {
 
 // Maquina hija 
 const fillCountries = {
+  predictableActionArguments: true,
   initial: 'loading',
   states: {
     loading: {
@@ -50,6 +51,7 @@ const fillCountries = {
 
 
 const bookingMachine = createMachine({
+  predictableActionArguments: true,
   id: "buy plane tickets",
   initial: "initial",
   context: INIT_CONTEXT,
@@ -78,7 +80,10 @@ const bookingMachine = createMachine({
     },
     passengers: {
       on: {
-        DONE: 'tickets',
+        DONE: {
+          target: 'tickets',
+          cond: "moreThanOnePassenger"
+        },
         ADD: {
           target: 'passengers',
           actions: assign(
@@ -109,9 +114,14 @@ const bookingMachine = createMachine({
   }
 }, {
   actions: {
-    showInit: () => console.log('Show Init'),
-    showEntry: () => console.log('Show Entry'),
-    showOut: () => console.log('Show Out')
+    // showInit: () => console.log('Show Init'),
+    // showEntry: () => console.log('Show Entry'),
+    // showOut: () => console.log('Show Out')
+  },
+  guards: {
+    moreThanOnePassenger: (context)=> {
+      return context.passengers.length > 0;
+    }
   }
 });
 

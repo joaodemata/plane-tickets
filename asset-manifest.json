@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/plane-tickets/static/css/main.a1f399cf.css",
+    "main.js": "/plane-tickets/static/js/main.3ca089be.js",
+    "static/js/787.2fc8b8af.chunk.js": "/plane-tickets/static/js/787.2fc8b8af.chunk.js",
+    "static/media/background-travel-2.jpg": "/plane-tickets/static/media/background-travel-2.1b3bc05ab3ab53a29ab2.jpg",
+    "index.html": "/plane-tickets/index.html",
+    "main.a1f399cf.css.map": "/plane-tickets/static/css/main.a1f399cf.css.map",
+    "main.3ca089be.js.map": "/plane-tickets/static/js/main.3ca089be.js.map",
+    "787.2fc8b8af.chunk.js.map": "/plane-tickets/static/js/787.2fc8b8af.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a1f399cf.css",
+    "static/js/main.3ca089be.js"
+  ]
+}

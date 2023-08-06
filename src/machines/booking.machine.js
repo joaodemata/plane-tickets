@@ -6,10 +6,15 @@ const bookingMachine = createMachine({
   states: {
     initial: {
       on: {
-        START: "search"
+        START: {
+          target: "search",
+          actions: 'showInit'
+        }
       }
     },
     search: {
+      entry: 'showEntry',
+      exit: 'showOut',
       on: {
         CONTINUE: "passengers",
         CANCEL: "initial"
@@ -26,7 +31,13 @@ const bookingMachine = createMachine({
         FINISH: "initial"
       }
     }
-      }
+  }
+}, {
+  actions: {
+    showInit: () => console.log('Show Init'),
+    showEntry: () => console.log('Show Entry'),
+    showOut: () => console.log('Show Out')
+  }
 });
 
 export default bookingMachine;

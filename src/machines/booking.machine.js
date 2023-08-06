@@ -1,34 +1,109 @@
 import { createMachine, assign } from 'xstate';
+import { fetchCountries } from '../utils/apis';
+
+const INIT_CONTEXT = {
+  passengers: [],
+  selectedCountry: '',
+  countries: [],
+  error: ''
+}
+
+const CANCEL_EVENT = {
+  CANCEL: {
+    target: 'initial',
+    actions: assign(
+     { passengers: [], selectedCountry: ''}
+    )
+  }
+}
+
+// Maquina hija 
+const fillCountries = {
+  initial: 'loading',
+  states: {
+    loading: {
+      invoke: {
+        id: 'getCountries',
+        src: () => fetchCountries,
+        onDone: {
+          target: 'success',
+          actions: assign({
+            countries: (context, event) => event.data
+          })
+        },
+        onError: {
+          targe: 'failure',
+          actions: assign({
+            error: 'Fallo el request'
+          })
+        }
+      }
+    },
+    success: {},
+    failure: {
+      on: {
+        RETRY: {target: 'loading'}
+      }
+    }
+  }
+}
+
 
 const bookingMachine = createMachine({
   id: "buy plane tickets",
   initial: "initial",
+  context: INIT_CONTEXT,
   states: {
     initial: {
       on: {
         START: {
           target: "search",
-          actions: 'showInit'
+          // actions: 'showInit'
         }
       }
     },
     search: {
-      entry: 'showEntry',
-      exit: 'showOut',
+      // entry: 'showEntry',
+      // exit: 'showOut',
       on: {
-        CONTINUE: "passengers",
-        CANCEL: "initial"
-      }
+        CONTINUE: {
+          target: "passengers",
+          actions: assign({
+            selectedCountry: (context, event) => event.selectedCountry
+          })
+        },
+        ...CANCEL_EVENT,
+      },
+      ...fillCountries,
     },
     passengers: {
       on: {
         DONE: 'tickets',
-        CANCEL: 'initial'
+        ADD: {
+          target: 'passengers',
+          actions: assign(
+             (context, event) => context.passengers.push(event.newPassenger)
+          )
+        },
+        ...CANCEL_EVENT
       }
     },
     tickets: {
+      after: {
+        5000: {
+          target: 'initial',
+          actions:  assign(
+            { passengers: [], selectedCountry: ''}
+           )
+        }
+      },
       on: {
-        FINISH: "initial"
+        FINISH: {
+          target: "initial",
+          actions: assign(
+            { passengers: [], selectedCountry: ''}
+           )
+        }
       }
     }
   }
